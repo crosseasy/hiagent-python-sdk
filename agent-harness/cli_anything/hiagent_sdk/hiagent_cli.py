@@ -6,6 +6,22 @@ from typing import Optional
 
 import click
 
+def _ensure_local_hiagent_api_on_path() -> None:
+    candidates = []
+    try:
+        candidates.append(Path(__file__).resolve().parents[3] / "libs" / "api")
+    except Exception:
+        pass
+    candidates.append(Path.cwd() / "libs" / "api")
+
+    for p in candidates:
+        if (p / "hiagent_api").is_dir():
+            sys.path.insert(0, str(p))
+            return
+
+
+_ensure_local_hiagent_api_on_path()
+
 from cli_anything.hiagent_sdk.core.project import Project
 from cli_anything.hiagent_sdk.core.session import SessionManager
 from cli_anything.hiagent_sdk.core.services import ServiceManager
