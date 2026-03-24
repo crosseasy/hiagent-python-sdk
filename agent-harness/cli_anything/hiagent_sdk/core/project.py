@@ -5,6 +5,14 @@ from typing import Dict, Optional, Any
 import os
 import json
 from pydantic import BaseModel, Field
+from dotenv import dotenv_values
+
+
+def _read_volc_dotenv() -> dict:
+    dotenv_path = Path(os.path.expanduser("~/.volc/.env"))
+    if not dotenv_path.is_file():
+        return {}
+    return dict(dotenv_values(str(dotenv_path)))
 
 
 class ProjectConfig(BaseModel):
@@ -83,13 +91,30 @@ class Project:
 
     def get_env_config(self) -> Dict[str, Any]:
         """Get configuration from environment variables."""
+        dotenv_data = _read_volc_dotenv()
         return {
-            "endpoint": os.getenv("HIAGENT_TOP_ENDPOINT", "https://open.volcengineapi.com"),
-            "region": os.getenv("HIAGENT_REGION", "cn-north-1"),
-            "app_base_url": os.getenv("HIAGENT_APP_BASE_URL"),
-            "app_key": os.getenv("HIAGENT_AGENT_APP_KEY"),
-            "workspace_id": os.getenv("HIAGENT_WORKSPACE_ID"),
-            "user_id": os.getenv("HIAGENT_USER_ID", "cli-user"),
+            "endpoint": os.getenv("HIAGENT_TOP_ENDPOINT")
+            or str(dotenv_data.get("HIAGENT_TOP_ENDPOINT") or "").strip()
+            or "https://open.volcengineapi.com",
+            "region": os.getenv("HIAGENT_REGION")
+            or str(dotenv_data.get("HIAGENT_REGION") or "").strip()
+            or "cn-north-1",
+            "app_base_url": os.getenv("HIAGENT_APP_BASE_URL")
+            or str(dotenv_data.get("HIAGENT_APP_BASE_URL") or "").strip()
+            or None,
+            "app_key": os.getenv("HIAGENT_AGENT_APP_KEY")
+            or os.getenv("HIAGENT_APP_KEY")
+            or str(dotenv_data.get("HIAGENT_AGENT_APP_KEY") or "").strip()
+            or str(dotenv_data.get("HIAGENT_APP_KEY") or "").strip()
+            or None,
+            "workspace_id": os.getenv("HIAGENT_WORKSPACE_ID")
+            or os.getenv("WORKSPACE_ID")
+            or str(dotenv_data.get("HIAGENT_WORKSPACE_ID") or "").strip()
+            or str(dotenv_data.get("WORKSPACE_ID") or "").strip()
+            or None,
+            "user_id": os.getenv("HIAGENT_USER_ID")
+            or str(dotenv_data.get("HIAGENT_USER_ID") or "").strip()
+            or "cli-user",
         }
 
     def get_effective_config(self) -> Dict[str, Any]:

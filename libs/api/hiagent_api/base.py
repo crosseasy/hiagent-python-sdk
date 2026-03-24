@@ -21,6 +21,7 @@ from typing import AsyncGenerator, Generator, Optional, Union
 
 import aiofiles
 import httpx
+from dotenv import dotenv_values
 from requests.auth import AuthBase
 
 try:
@@ -106,41 +107,47 @@ class Service(object):
             )
 
     def init(self):
-        if "VOLC_ACCESSKEY" in os.environ and "VOLC_SECRETKEY" in os.environ:
-            self.service_info.credentials.set_ak(os.environ["VOLC_ACCESSKEY"])
-            self.service_info.credentials.set_sk(os.environ["VOLC_SECRETKEY"])
-        else:
-            if os.environ.get("HOME", None) is None:
-                return
-            # 先尝试从credentials中读取ak、sk，credentials不存在则从config中读取
-            path_ini = os.environ["HOME"] + "/.volc/credentials"
-            path_json = os.environ["HOME"] + "/.volc/config"
-            if os.path.isfile(path_ini):
-                conf = configparser.ConfigParser()
-                conf.read(path_ini)
-                default_section, ak_option, sk_option = (
-                    "default",
-                    "access_key_id",
-                    "secret_access_key",
-                )
-                if conf.has_section(default_section):
-                    if conf.has_option(default_section, ak_option):
-                        ak = conf.get(default_section, ak_option)
-                        self.service_info.credentials.set_ak(ak)
-                    if conf.has_option(default_section, sk_option):
-                        sk = conf.get(default_section, sk_option)
-                        self.service_info.credentials.set_sk(sk)
-            elif os.path.isfile(path_json):
-                with open(path_json, "r") as f:
-                    try:
-                        j = json.load(f)
-                    except Exception:
-                        logging.warning("%s is not json file", path_json)
-                        return
-                    if "ak" in j:
-                        self.service_info.credentials.set_ak(j["ak"])
-                    if "sk" in j:
-                        self.service_info.credentials.set_sk(j["sk"])
+        dotenv_path = os.path.expanduser("~/.volc/.env")
+        dotenv_data = dotenv_values(dotenv_path) if os.path.isfile(dotenv_path) else {}
+
+        ak = os.environ.get("VOLC_ACCESSKEY") or str(dotenv_data.get("VOLC_ACCESSKEY") or "").strip()
+        sk = os.environ.get("VOLC_SECRETKEY") or str(dotenv_data.get("VOLC_SECRETKEY") or "").strip()
+        if ak and sk:
+            self.service_info.credentials.set_ak(ak)
+            self.service_info.credentials.set_sk(sk)
+            return
+
+        if os.environ.get("HOME", None) is None:
+            return
+        # 先尝试从credentials中读取ak、sk，credentials不存在则从config中读取
+        path_ini = os.environ["HOME"] + "/.volc/credentials"
+        path_json = os.environ["HOME"] + "/.volc/config"
+        if os.path.isfile(path_ini):
+            conf = configparser.ConfigParser()
+            conf.read(path_ini)
+            default_section, ak_option, sk_option = (
+                "default",
+                "access_key_id",
+                "secret_access_key",
+            )
+            if conf.has_section(default_section):
+                if conf.has_option(default_section, ak_option):
+                    ak = conf.get(default_section, ak_option)
+                    self.service_info.credentials.set_ak(ak)
+                if conf.has_option(default_section, sk_option):
+                    sk = conf.get(default_section, sk_option)
+                    self.service_info.credentials.set_sk(sk)
+        elif os.path.isfile(path_json):
+            with open(path_json, "r") as f:
+                try:
+                    j = json.load(f)
+                except Exception:
+                    logging.warning("%s is not json file", path_json)
+                    return
+                if "ak" in j:
+                    self.service_info.credentials.set_ak(j["ak"])
+                if "sk" in j:
+                    self.service_info.credentials.set_sk(j["sk"])
 
     def set_ak(self, ak):
         self.service_info.credentials.set_ak(ak)

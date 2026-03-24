@@ -12,6 +12,7 @@ from cli_anything.hiagent_sdk.core.project import Project, ProjectConfig
 from cli_anything.hiagent_sdk.core.session import SessionManager, Session
 from cli_anything.hiagent_sdk.core.services import ServiceManager
 from cli_anything.hiagent_sdk.core.export import Exporter
+from cli_anything.hiagent_sdk.utils.hiagent_backend import ensure_volc_credentials
 
 
 class TestProject:
@@ -81,20 +82,70 @@ class TestProject:
             del os.environ["HIAGENT_AGENT_APP_KEY"]
             del os.environ["HIAGENT_WORKSPACE_ID"]
 
-    def test_project_effective_config(self, temp_project):
+    def test_project_env_config_from_volc_dotenv(self, temp_project, monkeypatch):
+        with tempfile.TemporaryDirectory() as tmp_home:
+            volc_dir = Path(tmp_home) / ".volc"
+            volc_dir.mkdir(parents=True, exist_ok=True)
+            (volc_dir / ".env").write_text(
+                "\n".join(
+                    [
+                        "HIAGENT_TOP_ENDPOINT=https://dotenv-test.com",
+                        "HIAGENT_APP_KEY=dotenv-app-key",
+                        "WORKSPACE_ID=dotenv-ws",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            monkeypatch.setenv("HOME", tmp_home)
+            monkeypatch.delenv("HIAGENT_TOP_ENDPOINT", raising=False)
+            monkeypatch.delenv("HIAGENT_AGENT_APP_KEY", raising=False)
+            monkeypatch.delenv("HIAGENT_APP_KEY", raising=False)
+            monkeypatch.delenv("HIAGENT_WORKSPACE_ID", raising=False)
+            monkeypatch.delenv("WORKSPACE_ID", raising=False)
+
+            env_config = temp_project.get_env_config()
+            assert env_config["endpoint"] == "https://dotenv-test.com"
+            assert env_config["app_key"] == "dotenv-app-key"
+            assert env_config["workspace_id"] == "dotenv-ws"
+
+    def test_volc_credentials_from_volc_dotenv(self, monkeypatch):
+        with tempfile.TemporaryDirectory() as tmp_home:
+            volc_dir = Path(tmp_home) / ".volc"
+            volc_dir.mkdir(parents=True, exist_ok=True)
+            (volc_dir / ".env").write_text(
+                "\n".join(
+                    [
+                        "VOLC_ACCESSKEY=dotenv-ak",
+                        "VOLC_SECRETKEY=dotenv-sk",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            monkeypatch.setenv("HOME", tmp_home)
+            monkeypatch.delenv("VOLC_ACCESSKEY", raising=False)
+            monkeypatch.delenv("VOLC_SECRETKEY", raising=False)
+
+            ensure_volc_credentials()
+
+    def test_project_effective_config(self, temp_project, monkeypatch):
         """Test effective configuration (env vars override project config)."""
-        # Set project config
-        temp_project.update_config(app_key="project-key", workspace_id="project-ws")
+        with tempfile.TemporaryDirectory() as tmp_home:
+            monkeypatch.setenv("HOME", tmp_home)
+            monkeypatch.delenv("HIAGENT_WORKSPACE_ID", raising=False)
+            monkeypatch.delenv("WORKSPACE_ID", raising=False)
+            monkeypatch.delenv("HIAGENT_AGENT_APP_KEY", raising=False)
+            monkeypatch.delenv("HIAGENT_APP_KEY", raising=False)
 
-        # Set env vars
-        os.environ["HIAGENT_AGENT_APP_KEY"] = "env-key"
+            temp_project.update_config(app_key="project-key", workspace_id="project-ws")
+            monkeypatch.setenv("HIAGENT_AGENT_APP_KEY", "env-key")
 
-        try:
             effective = temp_project.get_effective_config()
             assert effective["app_key"] == "env-key"  # env overrides project
             assert effective["workspace_id"] == "project-ws"  # project value preserved
-        finally:
-            del os.environ["HIAGENT_AGENT_APP_KEY"]
 
     def test_project_session_file(self, temp_project):
         """Test session file creation."""

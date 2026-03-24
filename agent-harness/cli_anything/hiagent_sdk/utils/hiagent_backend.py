@@ -5,13 +5,27 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Optional
 
+from dotenv import dotenv_values
 from hiagent_api import up_types
 from hiagent_api.up import UpService
+
+
+def _read_volc_dotenv() -> dict:
+    dotenv_path = Path(os.path.expanduser("~/.volc/.env"))
+    if not dotenv_path.is_file():
+        return {}
+    return dict(dotenv_values(str(dotenv_path)))
 
 
 def ensure_volc_credentials() -> None:
     ak = os.environ.get("VOLC_ACCESSKEY")
     sk = os.environ.get("VOLC_SECRETKEY")
+    if ak and sk:
+        return
+
+    dotenv_data = _read_volc_dotenv()
+    ak = ak or str(dotenv_data.get("VOLC_ACCESSKEY") or "").strip()
+    sk = sk or str(dotenv_data.get("VOLC_SECRETKEY") or "").strip()
     if ak and sk:
         return
 
@@ -106,4 +120,3 @@ def download_file(
         "saved_to": str(save_to),
         "size": size,
     }
-
