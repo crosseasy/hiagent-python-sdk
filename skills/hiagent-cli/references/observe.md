@@ -1,6 +1,6 @@
 # observe 模块（重点）
 
-目标：使用 Observe 服务进行 API Token 管理与 Trace/Span 查询。
+目标：使用 Observe 观测服务进行 API Token 管理与 Trace/Span 查询。
 
 对应子命令：
 
