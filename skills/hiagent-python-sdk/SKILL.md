@@ -35,7 +35,7 @@ uv sync --group dev
 
 ### 2) 配置 .env
 
-根目录已有 `.env-sample`。让用户复制成 `.env` 并填值（不要把真实值贴到对话里）：
+如果根目录有`.env`文件就直接用它；否则用根目录已有的 `.env-sample`，让用户复制成 `.env` 并填值（不要把真实值贴到对话里）：
 
 ```bash
 cp .env-sample .env
