@@ -140,6 +140,45 @@ cli-anything-hiagent knowledge retrieve \
   --score-threshold 0.5
 ```
 
+## Observe Commands
+
+Observe service for API Token management and Trace/Span observability:
+
+```bash
+# Create API Token
+cli-anything-hiagent observe token-create \
+  --workspace-id ws-123 \
+  --custom-app-id app-456
+
+# List trace spans
+cli-anything-hiagent observe trace-list \
+  --workspace-id ws-123 \
+  --page-size 10 \
+  --sort-by StartTime \
+  --sort-order Desc
+
+# List trace spans with pagination
+cli-anything-hiagent observe trace-list \
+  --workspace-id ws-123 \
+  --page-size 20 \
+  --last-id last-doc-id \
+  --sort-by Latency \
+  --sort-order Asc
+```
+
+### Observe Command Options
+
+**token-create:**
+- `--workspace-id` (required): Workspace ID
+- `--custom-app-id` (required): Custom App ID
+
+**trace-list:**
+- `--workspace-id` (required): Workspace ID
+- `--page-size`: Page size (default: 10)
+- `--last-id`: Last ID for pagination
+- `--sort-by`: Sort field (StartTime, Latency, LatencyFirstResp, TotalTokens)
+- `--sort-order`: Sort order (Asc, Desc)
+
 ## File Commands
 
 Upload and download files:

@@ -116,6 +116,16 @@ class TestCLISubprocess:
             result5 = self._run(["--json", "--project", str(project), "session", "show", name])
             assert result5.returncode != 0
 
+    def test_observe_token_create_help(self):
+        result = self._run(["observe", "token", "create", "--help"])
+        assert result.returncode == 0
+        assert "workspace" in result.stdout.lower()
+
+    def test_observe_trace_list_help(self):
+        result = self._run(["observe", "trace", "list", "--help"])
+        assert result.returncode == 0
+        assert "workspace" in result.stdout.lower()
+
 
 @pytest.mark.e2e
 class TestRealApiE2E:
