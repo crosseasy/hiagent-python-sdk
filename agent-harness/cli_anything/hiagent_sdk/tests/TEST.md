@@ -205,4 +205,4 @@ GitHub Actions workflow configuration:
 
 ---
 
-*Generated with [Claude Code](https://claude.com/claude-code)*
+*Generated with [Hiagent](https://www.volcengine.com/product/hiagent)*

@@ -8,12 +8,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="cli-anything-hiagent",
     version="0.1.0",
-    author="Claude Code",
+    author="Hiagent",
     author_email="noreply@anthropic.com",
     description="Command-line interface for HiAgent Python SDK",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/anthropics/claude-code",
+    url="https://www.volcengine.com/product/hiagent",
     packages=find_namespace_packages(include=["cli_anything.*"]),
     classifiers=[
         "Development Status :: 4 - Beta",
