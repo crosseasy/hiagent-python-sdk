@@ -665,8 +665,10 @@ def observe_token_create(
 ):
     """Create an API Token for observe service."""
     try:
+        from cli_anything.hiagent_sdk.utils.hiagent_backend import ensure_volc_credentials
         from hiagent_api.observe_types import CreateApiTokenRequest
 
+        ensure_volc_credentials()
         req = CreateApiTokenRequest(
             WorkspaceID=workspace_id,
             CustomAppID=custom_app_id,
@@ -719,6 +721,7 @@ def observe_trace_list(
 ):
     """List trace spans."""
     try:
+        from cli_anything.hiagent_sdk.utils.hiagent_backend import ensure_volc_credentials
         from hiagent_api.observe_types import (
             ListTraceSpansRequest,
             ListTraceSpansRequestSort,
@@ -726,6 +729,7 @@ def observe_trace_list(
             SortOrderType,
         )
 
+        ensure_volc_credentials()
         req = ListTraceSpansRequest(
             WorkspaceID=workspace_id,
             PageSize=page_size,

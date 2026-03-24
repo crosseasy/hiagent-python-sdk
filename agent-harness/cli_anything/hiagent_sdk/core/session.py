@@ -7,6 +7,38 @@ from typing import Dict, Optional, Any, List
 from pydantic import BaseModel, Field
 
 
+def _locked_save_json(path: Path, data: dict, **dump_kwargs) -> None:
+    try:
+        f = open(path, "r+")
+    except FileNotFoundError:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        f = open(path, "w")
+
+    with f:
+        locked = False
+        try:
+            import fcntl
+
+            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+            locked = True
+        except (ImportError, OSError):
+            locked = False
+
+        try:
+            f.seek(0)
+            f.truncate()
+            json.dump(data, f, **dump_kwargs)
+            f.flush()
+        finally:
+            if locked:
+                try:
+                    import fcntl
+
+                    fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+                except Exception:
+                    pass
+
+
 class Session(BaseModel):
     """Represents a HiAgent session."""
 
@@ -94,9 +126,7 @@ class SessionManager:
         """Internal save method."""
         session.updated_at = datetime.now()
         session_file = self._session_file(session.name)
-
-        with open(session_file, "w") as f:
-            json.dump(session.model_dump(), f, indent=2, default=str)
+        _locked_save_json(session_file, session.model_dump(), indent=2, default=str)
 
     def delete_session(self, name: str) -> bool:
         """Delete a session."""

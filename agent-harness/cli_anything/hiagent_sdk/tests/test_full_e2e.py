@@ -116,15 +116,43 @@ class TestCLISubprocess:
             result5 = self._run(["--json", "--project", str(project), "session", "show", name])
             assert result5.returncode != 0
 
-    def test_observe_token_create_help(self):
-        result = self._run(["observe", "token", "create", "--help"])
-        assert result.returncode == 0
-        assert "workspace" in result.stdout.lower()
+    def test_observe_token_create_requires_credentials(self):
+        with tempfile.TemporaryDirectory() as tmp_home:
+            result = self._run(
+                [
+                    "--json",
+                    "observe",
+                    "token",
+                    "create",
+                    "--workspace-id",
+                    "ws-test",
+                    "--custom-app-id",
+                    "app-test",
+                ],
+                env={"HOME": tmp_home, "VOLC_ACCESSKEY": "", "VOLC_SECRETKEY": ""},
+            )
+            assert result.returncode != 0
+            data = json.loads(result.stdout)
+            assert data["success"] is False
+            assert "Volcengine credentials not found" in (data.get("message") or "")
 
-    def test_observe_trace_list_help(self):
-        result = self._run(["observe", "trace", "list", "--help"])
-        assert result.returncode == 0
-        assert "workspace" in result.stdout.lower()
+    def test_observe_trace_list_requires_credentials(self):
+        with tempfile.TemporaryDirectory() as tmp_home:
+            result = self._run(
+                [
+                    "--json",
+                    "observe",
+                    "trace",
+                    "list",
+                    "--workspace-id",
+                    "ws-test",
+                ],
+                env={"HOME": tmp_home, "VOLC_ACCESSKEY": "", "VOLC_SECRETKEY": ""},
+            )
+            assert result.returncode != 0
+            data = json.loads(result.stdout)
+            assert data["success"] is False
+            assert "Volcengine credentials not found" in (data.get("message") or "")
 
 
 @pytest.mark.e2e

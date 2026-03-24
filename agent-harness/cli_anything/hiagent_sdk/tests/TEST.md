@@ -18,13 +18,13 @@
   - `cli-anything-hiagent --help` / `--version`
   - `config set/show`（通过 `--project <tmpdir>`，不依赖 cwd）
   - `session create/list/show/delete`（通过 `--project <tmpdir>`）
-  - `observe token-create --workspace-id <ws> --custom-app-id <app>`（通过 `--json` 验证输出结构）
-  - `observe trace-list --workspace-id <ws>`（通过 `--json` 验证输出结构）
+  - `observe token create --workspace-id <ws> --custom-app-id <app>`（通过 `--json` 验证缺少鉴权时的错误可诊断）
+  - `observe trace list --workspace-id <ws>`（通过 `--json` 验证缺少鉴权时的错误可诊断）
 - Real API E2E（可选，带 `@pytest.mark.e2e`）：
   - `file upload` → 获取 `path`
   - `file download --path <path>` → 校验下载内容
-  - `observe token-create` → 校验返回 Token 与 ExpiresIn
-  - `observe trace-list` → 校验返回 Items 列表结构
+  - `observe token create` → 校验返回 Token 与 ExpiresIn
+  - `observe trace list` → 校验返回 Items 列表结构
   - 运行要求：`CLI_ANYTHING_E2E_REAL_API=1` + Volc 鉴权（`VOLC_ACCESSKEY`/`VOLC_SECRETKEY` 或 `~/.volc/credentials`）
 
 ## Test Results
