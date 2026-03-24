@@ -17,7 +17,7 @@ pip install -e .
 - HiAgent Python SDK (`hiagent-api`, `hiagent-components`)
 - Access to HiAgent API (requires Volcano Engine credentials)
   - `VOLC_ACCESSKEY` / `VOLC_SECRETKEY` environment variables, or
-  - `~/.volc/credentials` with a `[default]` profile
+  - `~/.volc/.env`
 
 ## Usage
 

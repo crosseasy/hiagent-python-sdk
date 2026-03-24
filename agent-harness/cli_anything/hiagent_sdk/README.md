@@ -26,7 +26,7 @@ pip install -e .
     export VOLC_ACCESSKEY=...
     export VOLC_SECRETKEY=...
     ```
-  - 或配置 `~/.volc/credentials` 的 `[default]` profile
+  - 或配置 `~/.volc/.env`
 
 ## 配置
 
@@ -84,7 +84,7 @@ python -m pytest cli_anything/hiagent_sdk/tests/ -v -s
 
 开启真实 UP E2E（可选）：
 - export CLI_ANYTHING_E2E_REAL_API=1
-- 配好 VOLC_ACCESSKEY/VOLC_SECRETKEY （或 ~/.volc/credentials ）
+- 配好 VOLC_ACCESSKEY/VOLC_SECRETKEY （或 ~/.volc/.env ）
 - uv run python -m pytest agent-harness/cli_anything/hiagent_sdk/tests/test_full_e2e.py -v -s -m e2e
 ```
 

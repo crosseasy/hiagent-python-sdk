@@ -13,11 +13,17 @@ Command-line interface for the HiAgent Python SDK built by Claude Code. This CLI
 pip install cli-anything-hiagent
 ```
 
+## Installation from source
+
+```bash
+uv pip install -e agent-harness
+```
+
 **Prerequisites:**
 - HiAgent Python SDK (`hiagent-api`, `hiagent-components`)
 - Volcano Engine credentials (request signing)
   - `VOLC_ACCESSKEY` / `VOLC_SECRETKEY` environment variables, or
-  - `~/.volc/credentials` with a `[default]` profile
+  - `~/.volc/.env`
 
 ## Configuration
 

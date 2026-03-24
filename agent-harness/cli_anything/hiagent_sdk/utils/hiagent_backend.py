@@ -59,9 +59,7 @@ def ensure_volc_credentials() -> None:
         "Set env vars:\n"
         "  export VOLC_ACCESSKEY=...\n"
         "  export VOLC_SECRETKEY=...\n"
-        "Or configure ~/.volc/credentials with a [default] profile:\n"
-        "  access_key_id=...\n"
-        "  secret_access_key=...\n"
+        "Or configure ~/.volc/.env\n"
     )
 
 

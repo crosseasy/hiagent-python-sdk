@@ -25,7 +25,7 @@
   - `file download --path <path>` → 校验下载内容
   - `observe token create` → 校验返回 Token 与 ExpiresIn
   - `observe trace list` → 校验返回 Items 列表结构
-  - 运行要求：`CLI_ANYTHING_E2E_REAL_API=1` + Volc 鉴权（`VOLC_ACCESSKEY`/`VOLC_SECRETKEY` 或 `~/.volc/credentials`）
+  - 运行要求：`CLI_ANYTHING_E2E_REAL_API=1` + Volc 鉴权（`VOLC_ACCESSKEY`/`VOLC_SECRETKEY` 或 `~/.volc/.env`）
 
 ## Test Results
 
