@@ -130,7 +130,7 @@ cli-anything-hiagent observe token create --workspace-id your_workspace_id --cus
 ```bash
 # 列出 Trace Spans, trace 详情
 # 输出 JSON 格式，--workspace-id 必填参数，其他参数可选填
-cli-anything-hiagent --json --project your_project observe trace list \
+cli-anything-hiagent --json observe trace list \
   --workspace-id your_workspace_id \
   --page-size 10 \
   --sort-by StartTime \

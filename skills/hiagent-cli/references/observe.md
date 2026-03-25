@@ -24,7 +24,7 @@ observe 模块会显式调用 `ensure_volc_credentials()`，因此必须满足�
 
 ## observe token create
 
-用途：为 observe 服务创建 API Token（通常用于后续观测/埋点系统对接）。
+用途：为 observe 观测服务创建 API Token（通常用于后续观测/埋点系统对接）。
 
 必填参数：
 
@@ -34,7 +34,7 @@ observe 模块会显式调用 `ensure_volc_credentials()`，因此必须满足�
 命令：
 
 ```bash
-<CMD> --json --project <PROJECT_ROOT> observe token create \
+<CMD> --json observe token create \
   --workspace-id <WORKSPACE_ID> \
   --custom-app-id <CUSTOM_APP_ID>
 ```
@@ -64,7 +64,7 @@ observe 模块会显式调用 `ensure_volc_credentials()`，因此必须满足�
 命令（按开始时间倒序）：
 
 ```bash
-<CMD> --json --project <PROJECT_ROOT> observe trace list \
+<CMD> --json observe trace list \
   --workspace-id <WORKSPACE_ID> \
   --page-size 10 \
   --sort-by StartTime \
@@ -74,7 +74,7 @@ observe 模块会显式调用 `ensure_volc_credentials()`，因此必须满足�
 分页（使用上一页返回的 last-id 继续）：
 
 ```bash
-<CMD> --json --project <PROJECT_ROOT> observe trace list \
+<CMD> --json observe trace list \
   --workspace-id <WORKSPACE_ID> \
   --page-size 20 \
   --last-id "<LAST_ID>" \
