@@ -23,6 +23,8 @@ _COMMANDS = {
     "knowledge retrieve": "Retrieve knowledge from datasets",
     "file upload": "Upload a file via UP service",
     "file download": "Download a file via UP service",
+    "observe token create": "Create an API token (observe service)",
+    "observe trace list": "List trace spans (observe service)",
     "help": "Show this help",
     "quit / exit": "Exit the REPL",
 }
